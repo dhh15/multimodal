@@ -8,5 +8,5 @@ files="./*.pdf"
 for filename in $files
 do
     base=${filename%.pdf}
-    pdftk $filename burst output $base"%04d.pdf"
+    pdftk $filename burst output $base"-%04d.pdf"
 done
