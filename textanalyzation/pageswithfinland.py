@@ -20,21 +20,24 @@ key_words = ['Finland', 'Finnish', 'Suomi']
 # When suomi is true, the filename is printed to file 'f' along with a line break
 # and montako variable gets plus one
 for filename in folder:
-    text_file = open('singlepagetxts/'+filename, 'r')
-    
-    suomi = False
 
-    teksti = text_file.read()
-    
-    for word in key_words:
-        if word in teksti:
-            suomi = True
+    # with - open is nice because you don't need to worry if you've remembered
+    # to close all files!
+    with open('singlepagetxts/'+filename, 'r') as text_file:
 
-    if suomi:
-        montako = montako+1
-        if montako < 10:
-            print filename
-        f.write(filename+'\n')
+        suomi = False
+
+        teksti = text_file.read()
+
+        for word in key_words:
+            if word in teksti:
+                suomi = True
+
+        if suomi:
+            montako = montako+1
+            if montako < 10:
+                print filename
+            f.write(filename+'\n')
 
 f.close()
 # closes the file 'f'
