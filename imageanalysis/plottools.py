@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 from matplotlib import pyplot as plt
+import cv2
 
 
 # plottikomento talteen
