@@ -6,6 +6,9 @@ import mahotas
 # let's do this as function!
 
 def detect_blocks(image):
+    """
+    Find large blocks in an image provided.
+    """
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # Apply bilinear blurring.
 
@@ -57,14 +60,17 @@ def detect_blocks(image):
     # In[43]:
 
     contours, hierarchy = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    large_contours = []
     for contour in contours:
         [x, y, w, h] = cv2.boundingRect(contour)
-        if h <= 0.02*image.shape[0] or w <= 0.02*image.shape[1]:
-            continue
-        cv2.rectangle(image, (x, y), (x+w, y+h), (171, 149, 39), 2)
+        if h > 0.08*image.shape[0] or w > 0.08*image.shape[1]:
+            # use only large images
+            # draw the image
+            cv2.rectangle(image, (x, y), (x+w, y+h), (171, 149, 39), 2)
+            large_contours.append(contour)
 
 
     # Write image on disk.
 
     # In[44]:
-    return image
+    return image, large_contours
