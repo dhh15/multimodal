@@ -61,6 +61,7 @@ def detect_blocks(image):
 
     contours, hierarchy = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     large_contours = []
+    bound_rects = []
     for contour in contours:
         [x, y, w, h] = cv2.boundingRect(contour)
         if h > 0.08*image.shape[0] or w > 0.08*image.shape[1]:
@@ -68,9 +69,10 @@ def detect_blocks(image):
             # draw the image
             cv2.rectangle(image, (x, y), (x+w, y+h), (171, 149, 39), 2)
             large_contours.append(contour)
+            bound_rects.append([x, y, w, h])
 
 
     # Write image on disk.
 
     # In[44]:
-    return image, large_contours
+    return image, large_contours, bound_rects
