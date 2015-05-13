@@ -24,7 +24,6 @@ for filename in folder:
     # with - open is nice because you don't need to worry if you've remembered
     # to close all files!
     with open('singlepagetxts/'+filename, 'r') as text_file:
-
         teksti = text_file.read()
 
 
@@ -39,7 +38,6 @@ for filename in folder:
         if montako < 10:
             print filename
         f.write(filename+'\n')
-
 f.close()
 # closes the file 'f'
 
