@@ -76,3 +76,18 @@ def detect_blocks(image):
 
     # In[44]:
     return image, large_contours, bound_rects
+
+def produce_clips(bounding_rects, image):
+    """return clippings (copies) of image (defined by bounding_rect)
+
+    :bounding_rect: TODO
+    :image: TODO
+    :returns: TODO
+
+    """
+    clips = []
+    for rect in bounding_rects:
+        [x, y, w, h] = rect
+        clips.append(image[y:(y+h), x:(x+w)].copy())
+
+    return clips
