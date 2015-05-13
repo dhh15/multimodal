@@ -62,6 +62,7 @@ svm_auto =cv2.SVM()
 svm_auto_params  = dict( kernel_type = cv2.SVM_LINEAR,svm_type = cv2.SVM_C_SVC)
 svm_auto.train_auto(train_hist_data, train_responses, None, None, params=svm_auto_params, k_fold=2)
 svm_auto.save('svm_auto.yaml')
+# according to yaml dump, C is always 1.0?!
 
 # get some testdata
 test_dir = "testclips/"
