@@ -30,5 +30,12 @@ image_dir = "another_folder/"
 text_hists = np.array(get_flathists(text_dir))
 image_hists = np.array(get_flathists(image_dir))
 
+# save copies with pickle
+with open('texthists_dump', 'w') as tf:
+    pickle.dump(text_hists, tf)
+
+with open('imagehists_dump', 'w') as imf:
+    pickle.dump(image_hists, imf)
+
 
 
