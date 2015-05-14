@@ -28,7 +28,9 @@ def get_flathists(dirname):
 # get training data
 
 text_dir = "text/"
+TEXT_C = 0
 image_dir = "images/"
+IMAGE_C = 1
 
 text_hists = np.array(get_flathists(text_dir)[0])
 image_hists = np.array(get_flathists(image_dir)[0])
@@ -41,8 +43,8 @@ with open('imagehists_dump', 'w') as imf:
     pickle.dump(image_hists, imf)
 
 train_hist_data = np.vstack((text_hists, image_hists))
-text_responses = np.float32(np.repeat(0,len(text_hists))[:,np.newaxis])
-image_responses = np.float32(np.repeat(1,len(image_hists))[:,np.newaxis])
+text_responses = np.float32(np.repeat(TEXT_C,len(text_hists))[:,np.newaxis])
+image_responses = np.float32(np.repeat(IMAGE_C,len(image_hists))[:,np.newaxis])
 train_responses = np.vstack((text_responses, image_responses))
 
 svm = cv2.SVM()
@@ -55,26 +57,42 @@ svm_params = dict(  kernel_type = cv2.SVM_LINEAR,
 # C, gamma are random guesses
 # probs should e.g. divide training data into to 2 sets and cross-validate
 svm.train(train_hist_data, train_responses, params=svm_params)
-svm.save('svm_test.yaml')
 
-# compare with train_auto, which should do cross-validation automatically (assuming I'm calling it correctly)
+# alternatively use train_auto, which should do cross-validation automatically (assuming I'm calling it correctly)
+# according to yaml dump, C is always 1.0?!
 svm_auto =cv2.SVM()
 svm_auto_params  = dict( kernel_type = cv2.SVM_LINEAR,svm_type = cv2.SVM_C_SVC)
 svm_auto.train_auto(train_hist_data, train_responses, None, None, params=svm_auto_params, k_fold=2)
 svm_auto.save('svm_auto.yaml')
-# according to yaml dump, C is always 1.0?!
 
-# get some testdata
-test_dir = "testclips/"
+## Test prediction accuracy:
 
-test_hists, test_names = get_flathists(test_dir)
-test_hists = np.array(test_hists)
+test_text_dir = "testtextclips/"
+test_image_dir = "testimageclips/"
+
+# get histograms for testtexts
+test_texthists, _ = get_flathists(test_text_dir)
+test_texthists = np.array(test_texthists)
+
+# same for images
+test_imagehists, _ = get_flathists(test_image_dir)
+test_imagehists = np.array(test_imagehists)
 
 # THE MAGIC
-test_preds = svm.predict_all(test_hists)
-test_preds_auto = svm_auto.predict_all(test_hists)
+text_test_preds = svm.predict_all(test_texthists)
+image_test_preds = svm.predict_all(test_imagehists)
 
-# let's look at results
-for i, name in enumerate(test_names):
-    print name, test_preds[i], test_preds_auto[i]
-    # it works?!
+# remember TEXT_C == 0, IMAGE_C = 1, so we can simply sum things up
+nttext = len(text_text_preds)
+ntimag = len(image_test_preds)
+ncorrect_text = nttext - sum(text_test_preds)
+ncorrect_image = sum(image_test_preds)
+print "text recog accuracy", 1.0*ncorrect_text/nttext
+print "image recog accuracy", 1.0*ncorrect_image/ntimag
+print "total accuracy", (1.0*ncorrect_text +ncorrect_image)/(nttext + ntimag)
+
+# objective: find such values for kernel type, C and nu  that we reach acceptable recognition accuracy
+# this could be automated, but we can get good enough results with just trying something
+
+# when done (= we have good svm), save it:
+svm.save("svm_final.yaml")    # we can load this in another script to do the large scale classifying
