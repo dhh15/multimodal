@@ -34,7 +34,7 @@ def process_clipfiles(dirname):
         flathists.append(hist_flat)
         clipnames.append(clip_name)
 
-    return flathists, clipnames, images
+    return flathists, clipnames, images, clipsizes
 
 def numpyfy_clipnames(clipnames):
     # clipnames a python list!
@@ -51,17 +51,17 @@ def numpyfy_clipnames(clipnames):
             cliparr[row, :] =  [year, magno, pageno, clipno]
     return cliparr
 
-datadir = 'dirname/'
+datadir = 'allclips2/'
 hists, clipnames, clips, clipsizes = process_clipfiles(datadir)
 hists = np.array(hists)
 clipmeta = numpyfy_clipnames(clipnames)
-clipmeta = np.hstack(clipmeta, np.array(clipsizes)[:, np.newaxis])
+clipmeta = np.hstack((clipmeta, np.array(clipsizes)[:, np.newaxis]))
 
 svm = cv2.SVM()
-svm.load('svm_final')
+svm.load('svm_final.yaml')
 
 preds = svm.predict_all(hists)   # text ==0, image ==1
-clipmeta = np.hstack(clipmeta, preds)
+clipmeta = np.hstack((clipmeta, preds))
 
 # save for later usage
 np.save('clip_meta', clipmeta)
