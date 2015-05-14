@@ -9,8 +9,8 @@ import pickle
 # our custo detecting tools
 import bdetect
 
-page_folder = "./trainpngs/" # one-page or double-page spread pngs
-clip_folder = "./trainclips/"
+page_folder = "./allpngs/" # one-page or double-page spread pngs
+clip_folder = "./allclips/"
 
 # let's make them into clippings
 
