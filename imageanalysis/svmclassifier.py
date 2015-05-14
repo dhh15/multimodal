@@ -116,17 +116,3 @@ svm_auto_params  = dict( kernel_type = cv2.SVM_LINEAR,svm_type = cv2.SVM_C_SVC)
 svm_auto.train_auto(train_hist_data, train_responses, None, None, params=svm_auto_params, k_fold=2)
 svm_auto.save('svm_auto.yaml')
 
-# THE MAGIC
-print "auto"
-text_test_preds = svm_auto.predict_all(test_texthists)
-image_test_preds = svm_auto.predict_all(test_imagehists)
-
-# remember TEXT_C == 0, IMAGE_C = 1, so we can simply sum things up
-nttext = len(text_test_preds)
-ntimag = len(image_test_preds)
-ncorrect_text = nttext - sum(text_test_preds)
-ncorrect_image = sum(image_test_preds)
-print Cv, gammav
-print "text recog accuracy", 1.0*ncorrect_text/nttext
-print "image recog accuracy", 1.0*ncorrect_image/ntimag
-print "total accuracy", (1.0*ncorrect_text +ncorrect_image)/(nttext + ntimag)
