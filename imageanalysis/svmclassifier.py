@@ -17,7 +17,9 @@ def get_flathists(dirname):
     flathists = []
     clipnames = []
     for clip_name in dirlist:
+        print clip_name
         clip_image = cv2.imread(dirname + clip_name)
+        print clip_image.shape
         hist3c = calc_hist(clip_image)
         hist_flat = hist3c.flatten()
         flathists.append(hist_flat)
@@ -27,9 +29,9 @@ def get_flathists(dirname):
 
 # get training data
 
-text_dir = "text/"
+text_dir = "clips-217-texts/"
 TEXT_C = 0
-image_dir = "images/"
+image_dir = "clips-89-images/"
 IMAGE_C = 1
 
 text_hists = np.array(get_flathists(text_dir)[0])
@@ -67,8 +69,8 @@ svm_auto.save('svm_auto.yaml')
 
 ## Test prediction accuracy:
 
-test_text_dir = "testtextclips/"
-test_image_dir = "testimageclips/"
+test_text_dir = "clips-217-texts-2/"
+test_image_dir = "clips-89-images-2/"
 
 # get histograms for testtexts
 test_texthists, _ = get_flathists(test_text_dir)
@@ -83,7 +85,7 @@ text_test_preds = svm.predict_all(test_texthists)
 image_test_preds = svm.predict_all(test_imagehists)
 
 # remember TEXT_C == 0, IMAGE_C = 1, so we can simply sum things up
-nttext = len(text_text_preds)
+nttext = len(text_test_preds)
 ntimag = len(image_test_preds)
 ncorrect_text = nttext - sum(text_test_preds)
 ncorrect_image = sum(image_test_preds)
